@@ -1,11 +1,121 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Mot Passant – App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mot Passant – Connexion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 520px;
+      margin: 60px auto;
+      padding: 0 16px;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 18px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    button {
+      padding: 12px 14px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .msg {
+      margin-top: 12px;
+    }
+    .small {
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Mot Passant – Application</h1>
-  <p>Déploiement en cours.</p>
+  <h1>Mot Passant</h1>
+
+  <div class="card">
+    <h2>Connexion (invitation uniquement)</h2>
+    <p class="small">
+      Entre ton email. Tu recevras un lien magique si ton accès est autorisé.
+    </p>
+
+    <input
+      id="email"
+      type="email"
+      placeholder="email@exemple.com"
+      autocomplete="email"
+    />
+
+    <button id="btn">Recevoir le lien de connexion</button>
+
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    // 🔐 CONFIGURATION SUPABASE
+    const SUPABASE_URL = "https://xpvjiyvdvppnfqtbiqop.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_YEbCxx94G5nkEEKQP9EbSQ_dAAGUd-B";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+    const emailEl = document.getElementById("email");
+    const btn = document.getElementById("btn");
+    const msg = document.getElementById("msg");
+
+    function setMsg(text) {
+      msg.textContent = text;
+    }
+
+    btn.addEventListener("click", async () => {
+      const email = emailEl.value.trim();
+      if (!email) {
+        setMsg("Merci de saisir un email.");
+        return;
+      }
+
+      btn.disabled = true;
+      setMsg("Envoi du lien magique…");
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (error) {
+        setMsg("❌ Erreur : " + error.message);
+      } else {
+        setMsg(
+          "✅ Si ton accès est autorisé, tu vas recevoir un email avec le lien de connexion."
+        );
+      }
+
+      btn.disabled = false;
+    });
+
+    // 🔎 Vérification de session (retour via lien magique)
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
+
+    if (session) {
+      setMsg("✅ Connecté(e). Accès validé.");
+    }
+  </script>
 </body>
 </html>
