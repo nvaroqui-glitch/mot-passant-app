@@ -585,7 +585,8 @@ async function loadSignals({ reason } = { reason: "unknown" }){
     // - Tu peux ajouter .eq("created_by", currentUser.id) si tu veux, mais pas obligatoire.
     const { data, error } = await supabase
       .from("signals")
-      .select("id,address,status,created_at")
+      .select("id,address,context,status,created_at")
+
       .order("created_at", { ascending: false });
 
     if (error) {
