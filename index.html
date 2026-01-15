@@ -590,10 +590,20 @@ async function loadSignals({ reason } = { reason: "unknown" }){
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("[signals.select]", { reason, error });
-      host.textContent = "Erreur de chargement.";
-      return;
-    }
+  console.error(
+    "[signals.select]",
+    reason || "unknown",
+
+    "message:", error.message,
+    "details:", error.details,
+    "hint:", error.hint,
+    "code:", error.code,
+    error
+  );
+  host.textContent = "Erreur de chargement.";
+  return;
+}
+
 
     signalsCache = Array.isArray(data) ? data : [];
 
