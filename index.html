@@ -17,17 +17,16 @@
     - On autorise jsdelivr car on charge supabase-js via CDN.
   -->
   <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    base-uri 'self';
-    object-src 'none';
-    form-action 'self';
-    img-src 'self' data: blob:;
-    style-src 'self' 'unsafe-inline';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;
-    connect-src 'self' https://*.supabase.co https://*.supabase.in;
-    font-src 'self' data:;
-    upgrade-insecure-requests;
-  ">
+  default-src 'self';
+  base-uri 'self';
+  object-src 'none';
+  form-action 'self';
+  img-src 'self' data: blob:;
+  style-src 'self' 'unsafe-inline';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net;
+  connect-src 'self' https://cdn.jsdelivr.net https://xpvjiyvdvppnfqtbiqop.supabase.co https://*.supabase.co https://*.supabase.in wss://*.supabase.co;
+  font-src 'self' data:;
+">
 
   <style>
     :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
