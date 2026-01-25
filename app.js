@@ -590,4 +590,3 @@ window.addEventListener("unhandledrejection", (ev) => {
  *  GO
  *  ================================ */
 boot();
-</script>
