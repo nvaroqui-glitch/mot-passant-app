@@ -16,7 +16,24 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     detectSessionInUrl: true
   }
 });
+async function handleMagicLink() {
+  try {
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
 
+    if (code) {
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (error) console.error("[exchangeCodeForSession]", error);
+
+      window.history.replaceState({}, document.title, window.location.origin + window.location.pathname);
+    }
+  } catch (e) {
+    console.error("[handleMagicLink]", e);
+  }
+}
+
+// lance le traitement du lien magique dès le chargement
+(async () => { await handleMagicLink(); })();
 /** ================================
  *  DOM HELPERS (défensifs)
  *  ================================ */
