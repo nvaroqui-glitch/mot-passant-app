@@ -252,7 +252,7 @@ $("btnMagic").addEventListener("click", async () => {
   try {
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.href }
+      options: { emailRedirectTo: window.location.origin }
     });
 
     if (error) {
