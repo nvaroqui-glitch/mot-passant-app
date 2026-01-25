@@ -1,4 +1,4 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/esm/index.js";
 console.log("app.js chargé");
 /** ================================
  *  CONFIG (à remplacer)
