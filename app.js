@@ -605,4 +605,24 @@ window.addEventListener("unhandledrejection", (ev) => {
 /** ================================
  *  GO
  *  ================================ */
+async function testApiLock() {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    alert("Pas connecté");
+    return;
+  }
+
+  const res = await fetch("/api/send-signal", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${session.access_token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({})
+  });
+
+  const json = await res.json();
+  alert(JSON.stringify(json, null, 2));
+}
 boot();
