@@ -270,11 +270,13 @@ async function boot(){
 /** ================================
  *  AUTH HANDLERS
  *  ================================ */
+
+// 1) Recevoir le code
 $("btnMagic").addEventListener("click", async () => {
   resetMessages();
 
   if (!canRun("magic", 2500)) {
-    return setStatus($("authMsg"), "Patiente une seconde avant de renvoyer le lien.", false);
+    return setStatus($("authMsg"), "Patiente une seconde avant de renvoyer le code.", false);
   }
 
   const email = safeText($("email").value).trim();
@@ -287,15 +289,15 @@ $("btnMagic").addEventListener("click", async () => {
 
   try {
     const { error } = await supabase.auth.signInWithOtp({
-  email,
-  options: { shouldCreateUser: true }
-});
+      email,
+      options: { shouldCreateUser: true },
+    });
 
     if (error) {
       console.error("[signInWithOtp]", error);
       setStatus($("authMsg"), error.message, false);
     } else {
-    setStatus($("authMsg"), "Code envoyé. Vérifie ta boite mail puis saisis le code.", true);
+      setStatus($("authMsg"), "Code envoyé. Vérifie ta boite mail puis saisis le code.", true);
     }
   } catch (e) {
     console.error("[signInWithOtp catch]", e);
@@ -305,12 +307,13 @@ $("btnMagic").addEventListener("click", async () => {
   }
 });
 
-$("btnLogout").addEventListener("click", async () => {
-  $("btnVerifyOtp").addEventListener("click", async () => {
-    console.log("CLICK verify OTP");
-setStatus($("authMsg"), "Je clique sur Valider le code", true);
-    $("btnVerifyOtp").disabled = true;
-  // évite double-clic
+// 2) Valider le code
+$("btnVerifyOtp").addEventListener("click", async () => {
+  console.log("CLICK verify OTP ✅");
+  resetMessages();
+  setStatus($("authMsg"), "👉 CLICK Valider le code capté", true);
+
+  $("btnVerifyOtp").disabled = true;
 
   try {
     const email = $("email").value.trim();
@@ -324,21 +327,22 @@ setStatus($("authMsg"), "Je clique sur Valider le code", true);
     setStatus($("authMsg"), "Vérification du code…");
 
     const { error } = await supabase.auth.verifyOtp({
-  email,
-  token,
-  type: "email",
-});
-console.log("VERIFY OTP payload:", { email, token, len: token?.length });
-console.log("VERIFY OTP result error:", error);
-    
+      email,
+      token,
+      type: "email",
+    });
+
+    console.log("VERIFY OTP payload:", { email, token, len: token?.length });
+    console.log("VERIFY OTP result error:", error);
+
     if (error) {
       console.error("[verifyOtp]", error);
       setStatus($("authMsg"), "Code invalide ou expiré.", false);
       return;
     }
 
-    setStatus($("authMsg"), "✅ Connecté(e) !", true);
-    // L'UI doit se mettre à jour via onAuthStateChange (déjà dans ton code)
+    setStatus($("authMsg"), "✅ Code validé. Connexion…", true);
+    // La bascule UI arrive via onAuthStateChange dans boot()
   } catch (e) {
     console.error("[verifyOtp catch]", e);
     setStatus($("authMsg"), "Erreur lors de la vérification.", false);
@@ -346,16 +350,20 @@ console.log("VERIFY OTP result error:", error);
     $("btnVerifyOtp").disabled = false;
   }
 });
+
+// 3) Logout
+$("btnLogout").addEventListener("click", async () => {
   $("btnLogout").disabled = true;
   try {
     await supabase.auth.signOut();
-    // UI via onAuthStateChange
   } catch (e) {
     console.error("[signOut]", e);
   } finally {
     $("btnLogout").disabled = false;
   }
 });
+
+
 
 /** ================================
  *  SIGNALS: CREATE
