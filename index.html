@@ -160,7 +160,19 @@
     <h2>Connexion</h2>
     <label>Email</label>
     <input id="email" type="email" autocomplete="email" inputmode="email" />
-    <button id="btnMagic" style="margin-top:10px;">Recevoir le lien</button>
+    <button id="btnMagic" style="margin-top:10px;">Recevoir le code</button>
+    <input
+  id="otpCode"
+  type="text"
+  placeholder="Code reçu par email"
+  inputmode="numeric"
+  autocomplete="one-time-code"
+  style="margin-top:10px;"
+/>
+
+<button id="btnVerifyOtp" style="margin-top:10px;">
+  Valider le code
+</button>
     <div id="authMsg" class="muted"></div>
     <div class="hint muted">
       Astuce : si tu ne reçois rien, regarde les spams et vérifie que l’adresse est correcte.
