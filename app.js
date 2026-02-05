@@ -306,6 +306,42 @@ $("btnMagic").addEventListener("click", async () => {
 });
 
 $("btnLogout").addEventListener("click", async () => {
+  $("btnVerifyOtp").addEventListener("click", async () => {
+    $("btnVerifyOtp").disabled = true;
+  // évite double-clic
+
+  try {
+    const email = $("email").value.trim();
+    const token = $("otpCode").value.trim();
+
+    if (!email || !token) {
+      setStatus($("authMsg"), "Email et code requis.", false);
+      return;
+    }
+
+    setStatus($("authMsg"), "Vérification du code…");
+
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: "email",
+    });
+
+    if (error) {
+      console.error("[verifyOtp]", error);
+      setStatus($("authMsg"), "Code invalide ou expiré.", false);
+      return;
+    }
+
+    setStatus($("authMsg"), "✅ Connecté(e) !", true);
+    // L'UI doit se mettre à jour via onAuthStateChange (déjà dans ton code)
+  } catch (e) {
+    console.error("[verifyOtp catch]", e);
+    setStatus($("authMsg"), "Erreur lors de la vérification.", false);
+  } finally {
+    $("btnVerifyOtp").disabled = false;
+  }
+});
   $("btnLogout").disabled = true;
   try {
     await supabase.auth.signOut();
