@@ -307,6 +307,8 @@ $("btnMagic").addEventListener("click", async () => {
 
 $("btnLogout").addEventListener("click", async () => {
   $("btnVerifyOtp").addEventListener("click", async () => {
+    console.log("CLICK verify OTP");
+setStatus($("authMsg"), "Je clique sur Valider le code", true);
     $("btnVerifyOtp").disabled = true;
   // évite double-clic
 
@@ -326,7 +328,9 @@ $("btnLogout").addEventListener("click", async () => {
   token,
   type: "email",
 });
-
+console.log("VERIFY OTP payload:", { email, token, len: token?.length });
+console.log("VERIFY OTP result error:", error);
+    
     if (error) {
       console.error("[verifyOtp]", error);
       setStatus($("authMsg"), "Code invalide ou expiré.", false);
