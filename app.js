@@ -322,10 +322,10 @@ $("btnLogout").addEventListener("click", async () => {
     setStatus($("authMsg"), "Vérification du code…");
 
     const { error } = await supabase.auth.verifyOtp({
-      email,
-      token,
-      type: "email",
-    });
+  email,
+  token,
+  type: "magiclink",
+});
 
     if (error) {
       console.error("[verifyOtp]", error);
