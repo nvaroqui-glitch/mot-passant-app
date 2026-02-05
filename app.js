@@ -283,19 +283,19 @@ $("btnMagic").addEventListener("click", async () => {
   }
 
   $("btnMagic").disabled = true;
-  setStatus($("authMsg"), "Envoi du lien…");
+  setStatus($("authMsg"), "Envoi du code…");
 
   try {
     const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin }
-    });
+  email,
+  options: { shouldCreateUser: true }
+});
 
     if (error) {
       console.error("[signInWithOtp]", error);
       setStatus($("authMsg"), error.message, false);
     } else {
-      setStatus($("authMsg"), "Lien envoyé. Vérifie ta boîte mail.", true);
+    setStatus($("authMsg"), "Code envoyé. Vérifie ta boite mail puis saisis le code.", true);
     }
   } catch (e) {
     console.error("[signInWithOtp catch]", e);
