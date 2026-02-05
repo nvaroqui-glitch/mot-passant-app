@@ -9,8 +9,27 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 /** ================================
  *  SUPABASE CLIENT
  *  ================================ */
+// --- Cookie storage (partagé Safari + PWA iOS) ---
+function setCookie(name, value, days = 30) {
+  const maxAge = days * 24 * 60 * 60;
+  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax; Secure`;
+}
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+function deleteCookie(name) {
+  document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax; Secure`;
+}
+
+const cookieStorage = {
+  getItem: (key) => getCookie(key),
+  setItem: (key, value) => setCookie(key, value, 30),
+  removeItem: (key) => deleteCookie(key),
+};
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
+    storage: cookieStorage,
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true
